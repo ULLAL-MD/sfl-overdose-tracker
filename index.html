@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>South Florida Overdose Tracker</title>
+<meta name="description" content="Drug overdose deaths in Miami-Dade, Broward and Palm Beach counties: county trends, a neighborhood map, methadone clinics and free naloxone sites, from public CDC, Census and SAMHSA data.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%23e06c1c%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header id="overview">
+    <h1>South Florida Overdose Tracker</h1>
+    <p class="lede">In the 12 months ending <span id="latest-month">—</span>, <b id="sfl-deaths">—</b> residents of Miami-Dade, Broward and Palm Beach counties died of a drug overdose, <span id="sfl-dir">—</span> <b id="sfl-change">—</b> from the 12 months before.</p>
+    <p class="sub">Provisional CDC death-certificate counts by county of residence, all drugs and all intents. Rates are crude deaths per 100,000 residents.</p>
+    <span class="asof">Data as of: CDC county counts Oct 4, 2026 · neighborhood data Nov 5, 2026 · sites checked Nov 13–17, 2026</span>
+  </header>
+
+  <section id="tiles" class="tiles">
+    <div class="card" data-row="0"><div class="card-name">South Florida (3 counties)</div><div class="card-win">12 months ending <span class="win">—</span></div>
+      <div class="big"><span class="v-deaths">—</span> <span class="line">deaths</span></div>
+      <div class="line"><b class="v-rate">—</b> per 100,000</div>
+      <div class="line"><b class="v-chg">—</b> vs. year earlier (<span class="v-prior">—</span>)</div></div>
+    <div class="card" data-row="1"><div class="card-name">Miami-Dade</div><div class="card-win">12 months ending <span class="win">—</span></div>
+      <div class="big"><span class="v-deaths">—</span> <span class="line">deaths</span></div>
+      <div class="line"><b class="v-rate">—</b> per 100,000</div>
+      <div class="line"><b class="v-chg">—</b> vs. year earlier (<span class="v-prior">—</span>)</div></div>
+    <div class="card" data-row="2"><div class="card-name">Broward</div><div class="card-win">12 months ending <span class="win">—</span></div>
+      <div class="big"><span class="v-deaths">—</span> <span class="line">deaths</span></div>
+      <div class="line"><b class="v-rate">—</b> per 100,000</div>
+      <div class="line"><b class="v-chg">—</b> vs. year earlier (<span class="v-prior">—</span>)</div></div>
+    <div class="card" data-row="3"><div class="card-name">Palm Beach</div><div class="card-win">12 months ending <span class="win">—</span></div>
+      <div class="big"><span class="v-deaths">—</span> <span class="line">deaths</span></div>
+      <div class="line"><b class="v-rate">—</b> per 100,000</div>
+      <div class="line"><b class="v-chg">—</b> vs. year earlier (<span class="v-prior">—</span>)</div></div>
+  </section>
+
+  <section id="map-section">
+    <h2>Overdose death rate by neighborhood</h2>
+    <p class="sub">Census tract groups (each at least 10,000 residents), shaded by deaths per 100,000 residents and placed by where the person lived. Scroll or pinch to zoom; click an area for its history.</p>
+    <div class="controls">
+      <label for="map-period">Period</label>
+      <select id="map-period" aria-label="Map period">
+        <option value="Latest 12 months">Latest 12 months (May 2025–Apr 2026)</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+      <label for="map-county">Area</label>
+      <select id="map-county" aria-label="Map area">
+        <option value="">All South Florida</option>
+        <option value="Miami-Dade">Miami-Dade</option>
+        <option value="Broward">Broward</option>
+        <option value="Palm Beach">Palm Beach</option>
+      </select>
+    </div>
+    <div class="controls toggles">
+      <label><input type="checkbox" id="tog-modeled" checked> Show modeled estimates (areas with 1–9 deaths)</label>
+      <label><input type="checkbox" id="tog-above"> Outline areas significantly above the South Florida rate</label>
+      <label><input type="checkbox" id="tog-county" checked> County boundaries</label>
+    </div>
+    <div class="controls toggles">
+      <label><input type="checkbox" id="tog-mm" checked> <span class="dot dot-mm"></span> Methadone clinics (outpatient maintenance)</label>
+      <label><input type="checkbox" id="tog-otp"> <span class="dot dot-otp"></span> Other certified opioid treatment programs (detox, residential, inpatient)</label>
+      <label><input type="checkbox" id="tog-nx" checked> <span class="dot dot-nx"></span> Free naloxone sites (clinics, vending machines, cabinets)</label>
+    </div>
+    <div class="mapwrap">
+      <div class="chart map" id="tract-map" role="img" aria-label="Map of overdose death rates per 100,000 by census tract group in Miami-Dade, Broward and Palm Beach counties"><div class="loading">Loading map…</div></div>
+      <div class="side">
+        <div class="card hover" id="area-hover">
+          <div class="card-name">Area under your pointer</div>
+          <p class="line">Move your pointer over a neighborhood on the map.</p>
+          <div class="hover-body" id="hover-body">—</div>
+        </div>
+        <div class="card detail" id="area-detail">
+          <div class="card-name">Selected area</div>
+          <p class="line">Click an area on the map to see its history.</p>
+          <p class="line" id="detail-note">—</p>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Period</th><th>Deaths</th><th>Per 100,000</th><th>95% interval</th></tr></thead>
+              <tbody id="detail-rows"></tbody>
+            </table>
+          </div>
+          <p class="line">South Florida rate for the same periods: <span id="sfl-ref">—</span></p>
+          <p class="line">Nearest methadone clinic: <b id="mm-miles">—</b> miles in a straight line, <span id="mm-name">—</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="sub">Areas with 1–9 deaths show a CDC model-based rate and interval; the exact count is withheld. Grey areas have too little data to estimate. For areas with 10 or more deaths the interval is a Poisson approximation computed here.</p>
+  </section>
+
+  <section id="trend">
+    <h2>Overdose death rate since 2020, rolling 12 months</h2>
+    <p class="sub">Each point is deaths in the 12 months ending that month, per 100,000 residents. The statewide line counts deaths by where they occurred and runs a few months further.</p>
+    <div class="controls">
+      <label for="county-pick">Compare with another county</label>
+      <select id="county-pick" aria-label="Compare with another county"><option value="">None</option></select>
+    </div>
+    <div class="chart" id="trend-chart" role="img" aria-label="Line chart of 12-month overdose death rates per 100,000 for Miami-Dade, Broward, Palm Beach and Florida statewide, January 2020 onward"><div class="loading">Loading chart…</div></div>
+  </section>
+
+  <section id="counties">
+    <h2>Every Florida county, latest 12 months</h2>
+    <p class="sub">South Florida counties are shaded. Counts of 1–9 are suppressed by CDC, so those counties show no rate.</p>
+    <div class="controls">
+      <label for="sort">Sort by</label>
+      <select id="sort" aria-label="Sort counties by">
+        <option value="rate">Death rate</option>
+        <option value="deaths">Deaths</option>
+        <option value="change_pct">Change vs. year earlier</option>
+        <option value="county">County name</option>
+      </select>
+    </div>
+    <div class="tablewrap">
+      <table id="county-table">
+        <thead><tr><th>County</th><th>Deaths</th><th>Per 100,000</th><th>Year earlier</th><th>Change</th><th class="l">Urban–rural type</th></tr></thead>
+        <tbody id="county-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <details class="notes" id="notes">
+    <summary>About these numbers</summary>
+    <ul>
+      <li><b>Source.</b> CDC National Center for Health Statistics, VSRR Provisional County-Level Drug Overdose Death Counts (data.cdc.gov dataset gb4e-yj24), downloaded with data as of October 4, 2026. Statewide line: VSRR Provisional Drug Overdose Death Counts (xkb8-kh2a), reported values.</li>
+      <li><b>What counts.</b> Deaths with an underlying cause of drug poisoning (ICD-10 X40–X44, X60–X64, X85, Y10–Y14): accidental, intentional, assault and undetermined intent, all drugs. Not opioid-specific.</li>
+      <li><b>Rolling 12 months.</b> Each value is the total for the 12 months ending in that month, which smooths seasonality but lags turning points by several months.</li>
+      <li><b>Provisional.</b> Recent months can rise as pending death investigations close, especially for counties with many pending toxicology results.</li>
+      <li><b>County vs. statewide.</b> County counts are by county of residence; the CDC statewide series is by place of occurrence, so the two are close but not identical.</li>
+      <li><b>Population.</b> U.S. Census Bureau Vintage 2024 county estimates (July 1 of each year). Months in 2025–2026 use the 2024 estimate, so recent rates are slightly overstated in fast-growing counties.</li>
+      <li><b>Suppression.</b> CDC withholds counts between 1 and 9; those appear blank here and are left out of totals.</li>
+      <li><b>Neighborhood map.</b> CDC Mapping Injury, Overdose, and Violence Dashboard, census tract data (data.cdc.gov 4day-mt2f), unintentional and undetermined-intent drug overdose deaths by tract of residence, grouped by CDC to at least 10,000 residents. Boundaries: 2020 Census tracts (Census cartographic files), dissolved into CDC’s groups. The map counts a slightly narrower set of deaths than the county figures (it excludes suicides and assaults). One downtown Miami group (tracts 26, 28 and 31) shows 50 and 157 deaths in 2022 and 2023, far above any other area; it may reflect how residence was recorded and is worth verifying before drawing conclusions.</li>
+      <li><b>Treatment programs.</b> SAMHSA FindTreatment.gov locator, federally certified opioid treatment programs (OTPs) in the three counties, downloaded November 13, 2026. "Methadone clinics" are programs listing outpatient methadone maintenance (10 sites); the other OTPs offer detox, residential or inpatient care and may use methadone only for short-term withdrawal. SAMHSA's OTP Directory lists about 40 certified programs in these counties; roughly 18 of them are not in FindTreatment.gov with a location and are not shown. Medicaid acceptance is as reported to FindTreatment.gov. Distance to the nearest methadone clinic is a straight line from each area's geographic center, not travel time by car or transit.</li>
+      <li><b>Free naloxone sites.</b> Fixed places only, compiled November 17, 2026: county health department clinics (DOH-Miami-Dade 2025 and DOH-Broward and DOH-Palm Beach 2024 public lists), two distributors named by DOH-Palm Beach and the ISAVEFL database (The Palm Beach Hub, BARC), the Broward Sheriff's Office jail-lobby vending machines (installed 2025), and Hanley Foundation emergency Narcan cabinets (their public sheet). Not shown: the C. L. Brumback Health Center in Belle Glade, three Hanley cabinets (Club Oasis, HomeSafe, Genesis Community Health) and BSO's Lauderdale Lakes office machine, whose addresses could not be placed reliably; Lauderhill Fire Rescue's 30+ city dispensers (no public list); pharmacies (all can dispense under the statewide standing order); mail-based programs; and the wider ISAVEFL network of enrolled distributors. Some cabinets are in recovery residences or supportive housing and may be open to residents only. Sites change often; call ahead.</li>
+      <li><b>Where deaths occurred.</b> Public sub-county data place deaths by residence only. Place of death (home, hospital, other) is available for counties through CDC WONDER and for some districts in medical examiner reports, not by neighborhood.</li>
+      <li><b>Not shown yet.</b> Non-fatal overdoses (ED visits, EMS), drug-specific deaths and medical-examiner toxicology are not in these files; they come from FDOH FLHealthCHARTS, DOH-Palm Beach OD2A and the FDLE Medical Examiners Commission.</li>
+      <li><b>Data files.</b> Every number on this page comes from the CSV and JSON files in the <a href="data/">data folder</a> of this site.</li>
+    </ul>
+  </details>
+
+  <footer>
+    Built from public data: CDC National Center for Health Statistics, U.S. Census Bureau, SAMHSA, Florida Department of Health county offices, Broward Sheriff's Office and the Hanley Foundation. In an emergency call 911. For treatment referral, call the SAMHSA National Helpline, 1-800-662-4357.
+  </footer>
+</main>
+<script src="assets/d3.v7.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
